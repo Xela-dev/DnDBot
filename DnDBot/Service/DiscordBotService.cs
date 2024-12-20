@@ -2,10 +2,12 @@
 using Discord.WebSocket;
 using DiscordBot.Handlers;
 
-namespace DnDBot
+namespace DnDBot.Services
 {
     public class DiscordBotService : IHostedService
     {
+        private string token = "";
+        
         private readonly DiscordSocketClient _client;
         private readonly CommandHandler _commandHandler;
         private readonly ILogger<DiscordBotService> _logger;
@@ -21,18 +23,14 @@ namespace DnDBot
         {
             _client.Log += LogAsync;
 
-            // Inicjalizacja handlera komend
             await _commandHandler.InstallCommandsAsync();
-
-            // Logowanie do Discorda
-            var token = "YOUR_DISCORD_BOT_TOKEN"; // Zamień na poprawny token
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Wyłączanie bota Discord...");
+            _logger.LogInformation("Turn off boot...");
             return _client.StopAsync();
         }
 

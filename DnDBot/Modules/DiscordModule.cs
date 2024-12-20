@@ -1,19 +1,12 @@
-﻿using System.Text.Json;
-using Discord.Commands;
+﻿using Discord.Commands;
 using DnDBot.Service;
+using Newtonsoft.Json;
 
-namespace DiscordBot.Modules;
+namespace DnDBot.Modules;
 
-public class DnDModule : ModuleBase<SocketCommandContext>
+public class DiscordModule : ModuleBase<SocketCommandContext>
 {
     private readonly DnDService service = new ();
-    
-    [Command("spell")]
-    public async Task GetSpellByName(string name)
-    {
-        var json = await service.GetSpellByNameAsync(name);
-        await sendFormattedJsonText(json);
-    }
     
     [Command("background")]
     public async Task GetBackgroundByName(string name)
@@ -36,17 +29,32 @@ public class DnDModule : ModuleBase<SocketCommandContext>
         await sendFormattedJsonText(json);
     }
     
+    [Command("spell")]
+    public async Task GetSpellByName(string name)
+    {
+        var json = await service.GetSpellByNameAsync(name);
+        await sendFormattedJsonText(json);
+    }
     
+    [Command("language")]
+    public async Task GetLanguageByName(string name)
+    {
+        var json = await service.GetLanguagesByNameAsync(name);
+        await sendFormattedJsonText(json);
+    }
+    
+    [Command("resource")]
+    public async Task GetResourcesByName(string name)
+    {
+        var json = await service.GetResourcesByPathAsync(name);
+        await sendFormattedJsonText(json);
+    }
 
     private async Task sendFormattedJsonText(string json)
     {
         if (String.IsNullOrEmpty(json)) return;
         
-        var jsonDocument = JsonDocument.Parse(json);
-        string formattedJson = JsonSerializer.Serialize(jsonDocument, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
+        string formattedJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(json), Formatting.Indented);
         
         await ReplyAsync("```json" +
                          $"\n{formattedJson}" +
