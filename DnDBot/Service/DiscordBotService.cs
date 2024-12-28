@@ -6,37 +6,43 @@ namespace DnDBot.Services
 {
     public class DiscordBotService : IHostedService
     {
-        private string token = "";
+        private string token;
         
-        private readonly DiscordSocketClient _client;
-        private readonly CommandHandler _commandHandler;
-        private readonly ILogger<DiscordBotService> _logger;
+        private readonly DiscordSocketClient client;
+        private readonly CommandHandler commandHandler;
+        private readonly ILogger<DiscordBotService> logger;
 
-        public DiscordBotService(DiscordSocketClient client, CommandHandler commandHandler, ILogger<DiscordBotService> logger)
+        public DiscordBotService(DiscordSocketClient client, CommandHandler commandHandler, ILogger<DiscordBotService> logger, IConfiguration configuration)
         {
-            _client = client;
-            _commandHandler = commandHandler;
-            _logger = logger;
+            this.client = client;
+            this.commandHandler = commandHandler;
+            this.logger = logger;
+            token = configuration["DiscordToken"];
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentException("The bot token was not configured correctly in appsettings.json");
+            }
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _client.Log += LogAsync;
+            client.Log += LogAsync;
 
-            await _commandHandler.InstallCommandsAsync();
-            await _client.LoginAsync(TokenType.Bot, token);
-            await _client.StartAsync();
+            await commandHandler.InstallCommandsAsync();
+            await client.LoginAsync(TokenType.Bot, token);
+            await client.StartAsync();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Turn off boot...");
-            return _client.StopAsync();
+            logger.LogInformation("Turn off boot...");
+            return client.StopAsync();
         }
 
         private Task LogAsync(LogMessage logMessage)
         {
-            _logger.LogInformation(logMessage.ToString());
+            logger.LogInformation(logMessage.ToString());
             return Task.CompletedTask;
         }
     }
