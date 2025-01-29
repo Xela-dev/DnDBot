@@ -20,9 +20,7 @@ namespace DnDBot.Services
             token = configuration["DiscordToken"];
             
             if (string.IsNullOrEmpty(token))
-            {
                 throw new ArgumentException("The bot token was not configured correctly in appsettings.json");
-            }
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)

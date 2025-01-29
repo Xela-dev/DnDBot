@@ -28,6 +28,11 @@ public class DnDService
         return apiService.GetStrItemByNameAsync("subraces", name);
     }
     
+    public Task<string> GetByTraitsNameAsync(string name)
+    {
+        return apiService.GetStrItemByNameAsync("traits", name);
+    }
+    
     public Task<string> GetSpellByNameAsync(string name)
     {
         return apiService.GetStrItemByNameAsync("spells", name);
