@@ -12,9 +12,7 @@ public class PersonClass : Model
     private string equipment;
     private List<string> equipmentOption;
 
-
     public PersonClass(JObject json) => castToInformation(json);
-
 
     public override string toString()
     {
@@ -22,15 +20,13 @@ public class PersonClass : Model
         string proficiencyChoices = this.proficiencyChoices != null ? listToString(", ", this.proficiencyChoices) : null;
         string proficiency = listToString(", ", this.proficiency);
         
-        //TODO: fix equipment
-        string strEquipment = equipment + (equipmentOption != null ? $"\n{equipmentOption}\n" : "\n");
-        string strProficiency = proficiency + (proficiencyChoices != null ? $"\n{proficiencyChoices}\n" : "\n");
+        string strEquipment = $"**Starting Equipment: **" + equipment + (equipmentOption != null ? $", Choose A or B: {equipmentOption}\n" : "\n");
+        string strProficiency = $"**Weapon Proficiencies: **" + proficiency + (proficiencyChoices != null ? $"\n**Skill Proficiencies:** {proficiencyChoices}\n" : "\n");
         
         return $"## {name}\n" +
                $"**Hit Point Die:** {hitDie}\n" +
                $"**Saving Throw Proficiencies:** {savingThrows}\n" +
-               $"**Skill Proficiencies:** {strProficiency}\n" +
-               $"**Equipment:** {strEquipment}";
+               $"{strProficiency}" + $"{strEquipment}";
     }
 
     protected override void castToInformation(JObject json)
@@ -41,6 +37,7 @@ public class PersonClass : Model
         setProficiencyClass(json);
         setSavingThrows(json);
         setEquipment(json);
+        setEquipmentOption(json);
     }
     
     private void setEquipmentOption(JObject json) =>
