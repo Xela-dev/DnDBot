@@ -46,27 +46,27 @@ Once the bot is running, you can use the following commands in your Discord serv
 
 - **Retrieve a background:**
   ```
-  /background [name]
+  !background [name]
   ```
 
 - **Retrieve a race:**
   ```
-  /race [name]
+  !race [name]
   ```
 
 - **Retrieve a class:**
   ```
-  /class [name]
+  !class [name]
   ```
 
 - **Retrieve a spell:**
   ```
-  /spell [name]
+  !spell [name]
   ```
 
 - **Retrieve a language:**
   ```
-  /language [name]
+  !language [name]
   ```
   
 
