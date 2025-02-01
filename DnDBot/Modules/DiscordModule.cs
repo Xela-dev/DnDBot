@@ -1,20 +1,21 @@
 ﻿using Discord.Commands;
 using DnDBot.Model;
 using DnDBot.Service;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DnDBot.Modules;
 
 public class DiscordModule : ModuleBase<SocketCommandContext>
 {
+    private const int MAX_CHARACTERS = 2000;
+    
     private readonly DnDService service = new ();
     
     [Command("background")]
     public async Task GetBackgroundByName(string name)
     {
         var json = await service.GetBackgroundByNameAsync(name);
-        await sendFormattedJsonText(json);
+        //await sendFormattedJsonText(json);
     }
     
     [Command("race")]
@@ -23,7 +24,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetRaceByName(name);
         var race = new Race(JObject.Parse(json));
         
-        await ReplyAsync(race.toString());
+        await sendMessages(race.toString());
     }
     
     [Command("class")]
@@ -32,7 +33,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetClassByNameAsync(name);
         var personClass = new PersonClass(JObject.Parse(json));
         
-        await ReplyAsync(personClass.toString());
+        await sendMessages(personClass.toString());
     }
     
     [Command("spell")]
@@ -41,7 +42,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetSpellByNameAsync(name);
         var spell = new Spell(JObject.Parse(json));
         
-        await ReplyAsync(spell.toString());
+        await sendMessages(spell.toString());
     }
     
     [Command("language")]
@@ -50,24 +51,67 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetLanguagesByNameAsync(name);
         var language = new Language(JObject.Parse(json));
         
-        await ReplyAsync(language.toString());
+        await sendMessages(language.toString());
     }
     
     [Command("resource")]
     public async Task GetResourcesByName(string name)
     {
         var json = await service.GetResourcesByPathAsync(name);
-        await sendFormattedJsonText(json);
+        var resource = new ResourceInfo(name, JArray.Parse(json));
+        
+        await sendMessages(resource.toString());
     }
 
-    private async Task sendFormattedJsonText(string json)
+    private async Task sendMessages(string text)
     {
-        if (String.IsNullOrEmpty(json)) return;
+        if (String.IsNullOrEmpty(text)) return;
+
+        var splitMessage = SplitMessage(text);
+
+        foreach (var message in splitMessage)
+        {
+            await ReplyAsync(message);
+        }
+    }
+    
+    private List<string> SplitMessage(string message)
+    {
+        var result = new List<string>();
+
+        while (message.Length > MAX_CHARACTERS)
+        {
+            int breakIndex = message.LastIndexOf('\n', MAX_CHARACTERS);
+            
+            if (breakIndex == -1)
+                breakIndex = message.LastIndexOf(' ', MAX_CHARACTERS);
+            
+            if (breakIndex == -1)
+                breakIndex = MAX_CHARACTERS;
+            
+            string part = message.Substring(0, breakIndex).TrimEnd();
+            string remainder = message.Substring(breakIndex).TrimStart();
+            
+            if (remainder.StartsWith("- ") && !part.EndsWith("\n"))
+            {
+                int newBreakIndex = message.LastIndexOf('\n', breakIndex);
+                if (newBreakIndex != -1)
+                {
+                    breakIndex = newBreakIndex;
+                    part = message.Substring(0, breakIndex).TrimEnd();
+                    remainder = message.Substring(breakIndex).TrimStart();
+                }
+            }
+
+            result.Add(part);
+            message = remainder;
+        }
         
-        string formattedJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(json), Formatting.Indented);
-        
-        await ReplyAsync("```json" +
-                         $"\n{formattedJson}" +
-                         "```");
+        if (message.Length > 0)
+        {
+            result.Add(message);
+        }
+
+        return result;
     }
 }
