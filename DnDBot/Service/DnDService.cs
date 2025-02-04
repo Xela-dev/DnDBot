@@ -48,4 +48,18 @@ public class DnDService
         var resouces = await apiService.GetResourcesByPathAsync(path);
         return resouces;
     }
+
+    public async Task<string> GetSpellsByLevelOrSchool(int level, string school = "")
+    {
+        var path = $"spells?level={level}" + (string.IsNullOrEmpty(school) ? $"&school={school}" : string.Empty);
+        var resouces = await apiService.GetResourcesByPathAsync(path);
+        return resouces;
+    }
+
+    public async Task<string> GetSpellsByClassAndLevel(string personClass, int level)
+    {
+        var path = $"classes/{personClass}/levels/{level}/spells";
+        var resouces = await apiService.GetResourcesByPathAsync(path);
+        return resouces;
+    }
 }

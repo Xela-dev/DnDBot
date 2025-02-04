@@ -24,7 +24,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetRaceByName(name);
         var race = new Race(JObject.Parse(json));
         
-        await sendMessages(race.toString());
+        await sendMessages(race.ToString());
     }
     
     [Command("class")]
@@ -33,7 +33,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetClassByNameAsync(name);
         var personClass = new PersonClass(JObject.Parse(json));
         
-        await sendMessages(personClass.toString());
+        await sendMessages(personClass.ToString());
     }
     
     [Command("spell")]
@@ -42,7 +42,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetSpellByNameAsync(name);
         var spell = new Spell(JObject.Parse(json));
         
-        await sendMessages(spell.toString());
+        await sendMessages(spell.ToString());
     }
     
     [Command("language")]
@@ -51,7 +51,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetLanguagesByNameAsync(name);
         var language = new Language(JObject.Parse(json));
         
-        await sendMessages(language.toString());
+        await sendMessages(language.ToString());
     }
     
     [Command("resource")]
@@ -60,22 +60,40 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var json = await service.GetResourcesByPathAsync(name);
         var resource = new ResourceInfo(name, JArray.Parse(json));
         
-        await sendMessages(resource.toString());
+        await sendMessages(resource.ToString());
+    }
+
+    [Command("list-spells")]
+    public async Task GetSpellsByLevelOrSchool(int level, string school = "")
+    {
+        var json = await service.GetSpellsByLevelOrSchool(level, school);
+        var name = "List of spells " + (string.IsNullOrEmpty(school) ? $"for level {level}" : $"by school {school}");
+        var resource = new ResourceInfo(name, JArray.Parse(json));
+        
+        await sendMessages(resource.ToString());
+    }
+    
+    [Command("list-spells")]
+    public async Task GetSpellsByClassAndLevel(string personClass, int level)
+    {
+        var json = await service.GetSpellsByClassAndLevel(personClass, level);
+        var name = $"{personClass}'s spells for level {level}";
+        var resource = new ResourceInfo(name, JArray.Parse(json));
+        
+        await sendMessages(resource.ToString());
     }
 
     private async Task sendMessages(string text)
     {
         if (String.IsNullOrEmpty(text)) return;
 
-        var splitMessage = SplitMessage(text);
+        var splitMessage = this.splitMessage(text);
 
         foreach (var message in splitMessage)
-        {
             await ReplyAsync(message);
-        }
     }
     
-    private List<string> SplitMessage(string message)
+    private List<string> splitMessage(string message)
     {
         var result = new List<string>();
 
@@ -108,9 +126,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         }
         
         if (message.Length > 0)
-        {
             result.Add(message);
-        }
 
         return result;
     }
