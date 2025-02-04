@@ -13,7 +13,7 @@ public class ResourceInfo : Model
         resources = json.ToObject<List<string>>();
     }
 
-    public override string toString()
+    public override string ToString()
     {
         var strResource = "- " + string.Join("\n- ", resources);
         return $"**{name}:**\n{strResource}";

@@ -14,7 +14,7 @@ public class PersonClass : Model
 
     public PersonClass(JObject json) => castToInformation(json);
 
-    public override string toString()
+    public override string ToString()
     {
         string equipmentOption = this.equipmentOption != null ? listToString(", ", this.equipmentOption) : null;
         string proficiencyChoices = this.proficiencyChoices != null ? listToString(", ", this.proficiencyChoices) : null;

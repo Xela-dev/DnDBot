@@ -11,7 +11,7 @@ public class Language : Model
     
     public Language(JObject json) => castToInformation(json);
     
-    public override string toString()
+    public override string ToString()
     {
         var speakers = string.Join(", ", typicalSpeaker);
 

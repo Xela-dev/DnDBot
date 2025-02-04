@@ -40,7 +40,7 @@ public class Race : Model
     private void setTraits(JObject json) =>
         traits = json["traits"].Select(t => t["name"].ToString()).ToList();
     
-    public override string toString()
+    public override string ToString()
     {
         var strTraits = "- " + listToString("\n- ", this.traits);
         

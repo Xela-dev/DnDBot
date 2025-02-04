@@ -29,7 +29,7 @@ public class Spell : Model
         this.damage = json["damage"]["damage_type"].ToObject<ResourceItem>();
     }
 
-    public override string toString()
+    public override string ToString()
     {
         var desc = listToString("\\", this.components.ToArray());
         var descHighLevel = listToString("\\", this.descHighLevel.ToArray());
