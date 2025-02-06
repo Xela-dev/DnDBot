@@ -63,6 +63,24 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         await sendMessages(resource.ToString());
     }
 
+    [Command("ability-score")]
+    public async Task<string> GetAbilityScoreByNameAsync(string name)
+    {
+        var json = await service.GetAbilityScoreByNameAsync(name);
+        var abilityScore = new AbilityScore(JObject.Parse(json));
+        
+        return abilityScore.ToString();
+    }
+
+    [Command("skill")]
+    public async Task<string> GetSkillByIndexAsync(string index)
+    {
+        var json = await service.GetSkillByIndexAsync(index);
+        var skill = new Skill(JObject.Parse(json));
+        
+        return skill.ToString();
+    }
+
     [Command("list-spells")]
     public async Task GetSpellsByLevelOrSchool(int level, string school = "")
     {
