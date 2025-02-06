@@ -38,9 +38,25 @@ public class DnDService
         return apiService.GetStrItemByNameAsync("spells", name);
     }
     
-    public Task<string> GetLanguagesByNameAsync(string name)
+    public Task<string> GetAlignmentByNameAsync(string alignmentOrder, string morality = "")
     {
-        return apiService.GetItemByNameAsync("languages", name);
+        var name = $"{alignmentOrder}" + (string.IsNullOrEmpty(morality) ? $"-{morality}" : string.Empty);
+        return apiService.GetStrItemByNameAsync("ability-scores", name);
+    }
+
+    public async Task<string> GetAbilityScoreByNameAsync(string name)
+    {
+        return await apiService.GetItemByNameAsync("ability-scores", name);
+    }
+
+    public async Task<string> GetSkillByIndexAsync(string index)
+    {
+        return await apiService.GetItemByNameAsync("skills", index);
+    }
+    
+    public async Task<string> GetLanguagesByNameAsync(string name)
+    {
+        return await apiService.GetItemByNameAsync("languages", name);
     }
     
     public async Task<string> GetResourcesByPathAsync(string path)
