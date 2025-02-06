@@ -58,6 +58,11 @@ public class DnDService
     {
         return await apiService.GetItemByNameAsync("languages", name);
     }
+
+    public async Task<string> GetEquipmentCategoryByNameAsync(string name)
+    {
+        return await apiService.GetItemByNameAsync("equipment-categories", name);
+    }
     
     public async Task<string> GetResourcesByPathAsync(string path)
     {

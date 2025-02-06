@@ -63,6 +63,15 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         await sendMessages(resource.ToString());
     }
 
+    [Command("type-equipment")]
+    public async Task<string> GetEquipmentCategoryByNameAsync(string name)
+    {
+        var json = await service.GetEquipmentCategoryByNameAsync(name);
+        var equipmentCategory = new EquipmentCategory(JObject.Parse(json));
+        
+        return equipmentCategory.ToString();
+    }
+
     [Command("ability-score")]
     public async Task<string> GetAbilityScoreByNameAsync(string name)
     {
