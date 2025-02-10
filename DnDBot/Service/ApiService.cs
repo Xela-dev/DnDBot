@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using DnDBot.Model;
 using Newtonsoft.Json;
 
@@ -22,34 +23,21 @@ public class ApiService
         return String.IsNullOrEmpty(response) ? default : JsonConvert.DeserializeObject<T>(response);
     }
     
+    public async Task<string> GetAsync(string path)
+    {
+        return await getAsync(path);
+    }
+    
     public async Task<string> GetItemByNameAsync(string path, string index)
     {
-        var item = await findResourceItemByIndexAsync(path, index);
-
-        if (item != null)
-            return await getAsync(item.Url);
-        
-        return null;
+        var url = $"/api/{path}/{index}";
+        return await GetAsync(url);
     }
 
     public async Task<T> GetItemByNameAsync<T>(string path, string index)
     {
-        var item = await findResourceItemByIndexAsync(path, index);
-
-        if (item != null)
-            return await GetAsync<T>(item.Url);
-        
-        return default;
-    }
-    
-    public async Task<string> GetStrItemByNameAsync(string path, string index)
-    {
-        var item = await findResourceItemByIndexAsync(path, index);
-
-        if (item != null)
-            return await getAsync(item.Url);
-        
-        return default;
+        var url = $"/api/{path}/{index}";
+        return await GetAsync<T>(url);
     }
 
     public async Task<string> GetResourcesByPathAsync(string path)
@@ -58,32 +46,21 @@ public class ApiService
         List<String> resourceNames = new ();
         
         foreach (var resource in response.Results)
-        {
             resourceNames.Add(resource.Name);
-        }
         
         return JsonConvert.SerializeObject(resourceNames);
     }
-
-    private async Task<ResourceItem> findResourceItemByIndexAsync(string path, string index)
-    {
-        var response = await GetAsync<Feature>(path);
-
-        foreach (var item in response.Results)
-            if (item.Index == index)
-                return item;
-
-        return null;
-    }
     
-    private async Task<string> getAsync(string url)
+    private async Task<string> getAsync(string path)
     {
-        var path = url.Contains("/api") ? url : $"/api/{url}";
-        var responseMessage = await client.GetAsync(path);
-
-        if (responseMessage.IsSuccessStatusCode)
-            return responseMessage.Content.ReadAsStringAsync().Result;
-
-        return default;
+        try
+        {
+            var responseMessage = await client.GetAsync(path);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("");
+        }
     }
 }
