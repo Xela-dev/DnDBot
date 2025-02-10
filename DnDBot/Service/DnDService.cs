@@ -20,28 +20,28 @@ public class DnDService
     
     public Task<string> GetClassByNameAsync(string name)
     {
-        return apiService.GetStrItemByNameAsync("classes", name);
+        return apiService.GetItemByNameAsync("classes", name);
     }
     
     public Task<string> GetSubraceByNameAsync(string name)
     {
-        return apiService.GetStrItemByNameAsync("subraces", name);
+        return apiService.GetItemByNameAsync("subraces", name);
     }
     
     public Task<string> GetByTraitsNameAsync(string name)
     {
-        return apiService.GetStrItemByNameAsync("traits", name);
+        return apiService.GetItemByNameAsync("traits", name);
     }
     
     public Task<string> GetSpellByNameAsync(string name)
     {
-        return apiService.GetStrItemByNameAsync("spells", name);
+        return apiService.GetItemByNameAsync("spells", name);
     }
     
     public Task<string> GetAlignmentByNameAsync(string alignmentOrder, string morality = "")
     {
         var name = $"{alignmentOrder}" + (string.IsNullOrEmpty(morality) ? $"-{morality}" : string.Empty);
-        return apiService.GetStrItemByNameAsync("ability-scores", name);
+        return apiService.GetItemByNameAsync("ability-scores", name);
     }
 
     public async Task<string> GetAbilityScoreByNameAsync(string name)

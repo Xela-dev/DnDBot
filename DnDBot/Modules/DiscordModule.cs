@@ -15,7 +15,7 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
     public async Task GetBackgroundByName(string name)
     {
         var json = await service.GetBackgroundByNameAsync(name);
-        //await sendFormattedJsonText(json);
+        throw new NotImplementedException();
     }
     
     [Command("race")]
@@ -54,13 +54,22 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         await sendMessages(language.ToString());
     }
     
-    [Command("resource")]
+    [Command("list")]
     public async Task GetResourcesByName(string name)
     {
         var json = await service.GetResourcesByPathAsync(name);
         var resource = new ResourceInfo(name, JArray.Parse(json));
         
         await sendMessages(resource.ToString());
+    }
+
+    [Command("subrace")]
+    public async Task<string> GetSubraceByNameAsync(string name)
+    {
+        var json = await service.GetSubraceByNameAsync(name);
+        var subrace = new Subrace(JObject.Parse(json));
+        
+        return subrace.ToString();
     }
 
     [Command("type-equipment")]
@@ -70,6 +79,13 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var equipmentCategory = new EquipmentCategory(JObject.Parse(json));
         
         return equipmentCategory.ToString();
+    }
+
+    [Command("traits")]
+    public async Task<string> GetTraitsByNameAsync(string name)
+    {
+        var json = await service.GetByTraitsNameAsync(name);
+        throw new NotImplementedException();
     }
 
     [Command("ability-score")]
