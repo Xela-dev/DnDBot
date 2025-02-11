@@ -18,7 +18,4 @@ public class ResourceInfo : Model
         var strResource = resources.Count > 0 ? "- " + string.Join("\n- ", resources) : "**empty**";
         return $"**{name}:**\n{strResource}";
     }
-
-    protected override void castToInformation(JObject json)
-    { }
 }

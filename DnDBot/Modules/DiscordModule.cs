@@ -21,36 +21,28 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
     [Command("race")]
     public async Task GetRaceByName(string name)
     {
-        var json = await service.GetRaceByName(name);
-        var race = new Race(JObject.Parse(json));
-        
+        var race = await service.GetRaceByName(name);
         await sendMessages(race.ToString());
     }
     
     [Command("class")]
     public async Task GetClassByName(string name)
     {
-        var json = await service.GetClassByNameAsync(name);
-        var personClass = new PersonClass(JObject.Parse(json));
-        
+        var personClass = await service.GetClassByNameAsync(name);
         await sendMessages(personClass.ToString());
     }
     
     [Command("spell")]
     public async Task GetSpellByName(string name)
     {
-        var json = await service.GetSpellByNameAsync(name);
-        var spell = new Spell(JObject.Parse(json));
-        
+        var spell = await service.GetSpellByNameAsync(name);
         await sendMessages(spell.ToString());
     }
     
     [Command("language")]
     public async Task GetLanguageByName(string name)
     {
-        var json = await service.GetLanguagesByNameAsync(name);
-        var language = new Language(JObject.Parse(json));
-        
+        var language = await service.GetLanguagesByNameAsync(name);
         await sendMessages(language.ToString());
     }
     
@@ -66,19 +58,15 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
     [Command("subrace")]
     public async Task<string> GetSubraceByNameAsync(string name)
     {
-        var json = await service.GetSubraceByNameAsync(name);
-        var subrace = new Subrace(JObject.Parse(json));
-        
+        var subrace = await service.GetSubraceByNameAsync(name);
         return subrace.ToString();
     }
 
     [Command("type-equipment")]
-    public async Task<string> GetEquipmentCategoryByNameAsync(string name)
+    public async Task GetEquipmentCategoryByNameAsync(string name)
     {
-        var json = await service.GetEquipmentCategoryByNameAsync(name);
-        var equipmentCategory = new EquipmentCategory(JObject.Parse(json));
-        
-        return equipmentCategory.ToString();
+        var equipmentCategory = await service.GetEquipmentCategoryByNameAsync(name);
+        await sendMessages(equipmentCategory.ToString());
     }
 
     [Command("traits")]
@@ -89,21 +77,17 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
     }
 
     [Command("ability-score")]
-    public async Task<string> GetAbilityScoreByNameAsync(string name)
+    public async Task GetAbilityScoreByNameAsync(string name)
     {
-        var json = await service.GetAbilityScoreByNameAsync(name);
-        var abilityScore = new AbilityScore(JObject.Parse(json));
-        
-        return abilityScore.ToString();
+        var abilityScore = await service.GetAbilityScoreByNameAsync(name);
+        await sendMessages(abilityScore.ToString());
     }
 
     [Command("skill")]
-    public async Task<string> GetSkillByIndexAsync(string index)
+    public async Task GetSkillByIndexAsync(string index)
     {
-        var json = await service.GetSkillByIndexAsync(index);
-        var skill = new Skill(JObject.Parse(json));
-        
-        return skill.ToString();
+        var skill = await service.GetSkillByIndexAsync(index);
+        await sendMessages(skill.ToString());
     }
 
     [Command("list-spells")]
