@@ -56,10 +56,10 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
     }
 
     [Command("subrace")]
-    public async Task<string> GetSubraceByNameAsync(string name)
+    public async Task GetSubraceByNameAsync(string name)
     {
         var subrace = await service.GetSubraceByNameAsync(name);
-        return subrace.ToString();
+        await sendMessages(subrace.ToString());
     }
 
     [Command("type-equipment")]
