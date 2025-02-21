@@ -5,18 +5,11 @@ using Newtonsoft.Json.Linq;
 
 namespace DnDBot.Modules;
 
-public class DiscordModule : ModuleBase<SocketCommandContext>
+public partial class DiscordModule : ModuleBase<SocketCommandContext>
 {
     private const int MAX_CHARACTERS = 2000;
-    
-    private readonly DnDService service = new ();
-    
-    [Command("background")]
-    public async Task GetBackgroundByName(string name)
-    {
-        var json = await service.GetBackgroundByNameAsync(name);
-        throw new NotImplementedException();
-    }
+
+    private readonly DnDService service = new();
     
     [Command("race")]
     public async Task GetRaceByName(string name)
@@ -31,19 +24,12 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         var personClass = await service.GetClassByNameAsync(name);
         await sendMessages(personClass.ToString());
     }
-    
-    [Command("spell")]
-    public async Task GetSpellByName(string name)
+
+    [Command("subclass")]
+    public async Task GetSubclassByName(string name)
     {
-        var spell = await service.GetSpellByNameAsync(name);
-        await sendMessages(spell.ToString());
-    }
-    
-    [Command("language")]
-    public async Task GetLanguageByName(string name)
-    {
-        var language = await service.GetLanguagesByNameAsync(name);
-        await sendMessages(language.ToString());
+        var subclass = await service.GetSubclassByName(name);
+        await sendMessages(subclass.ToString());
     }
     
     [Command("list")]
@@ -62,13 +48,6 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         await sendMessages(subrace.ToString());
     }
 
-    [Command("type-equipment")]
-    public async Task GetEquipmentCategoryByNameAsync(string name)
-    {
-        var equipmentCategory = await service.GetEquipmentCategoryByNameAsync(name);
-        await sendMessages(equipmentCategory.ToString());
-    }
-
     [Command("traits")]
     public async Task<string> GetTraitsByNameAsync(string name)
     {
@@ -76,36 +55,22 @@ public class DiscordModule : ModuleBase<SocketCommandContext>
         throw new NotImplementedException();
     }
 
-    [Command("ability-score")]
-    public async Task GetAbilityScoreByNameAsync(string name)
+    [Command("list-subclasses")]
+    public async Task GetSubclassByNameClassAsync(string name)
     {
-        var abilityScore = await service.GetAbilityScoreByNameAsync(name);
-        await sendMessages(abilityScore.ToString());
-    }
-
-    [Command("skill")]
-    public async Task GetSkillByIndexAsync(string index)
-    {
-        var skill = await service.GetSkillByIndexAsync(index);
-        await sendMessages(skill.ToString());
-    }
-
-    [Command("list-spells")]
-    public async Task GetSpellsByLevelOrSchool(int level, string school = "")
-    {
-        var json = await service.GetSpellsByLevelOrSchool(level, school);
-        var name = "List of spells " + (string.IsNullOrEmpty(school) ? $"for level {level}" : $"by school {school}");
-        var resource = new ResourceInfo(name, JArray.Parse(json));
+        var json = await service.GetSubclassesByNameClassAsync(name);
+        var title = $"Subclasses by class {name}";
+        var resource = new ResourceInfo(title, JArray.Parse(json));
         
         await sendMessages(resource.ToString());
     }
-    
-    [Command("list-spells")]
-    public async Task GetSpellsByClassAndLevel(string personClass, int level)
+
+    [Command("list-monsters")]
+    public async Task GetMonstersByRank(string rank)
     {
-        var json = await service.GetSpellsByClassAndLevel(personClass, level);
-        var name = $"{personClass}'s spells for level {level}";
-        var resource = new ResourceInfo(name, JArray.Parse(json));
+        var json = await service.GetMonstersByRankAsync(rank);
+        var title = $"Monsters by ranks: {rank}";
+        var resource = new ResourceInfo(title, JArray.Parse(json));
         
         await sendMessages(resource.ToString());
     }
